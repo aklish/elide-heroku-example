@@ -20,6 +20,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import static example.Settings.JDBC_PASSWORD;
+import static example.Settings.JDBC_URL;
+import static example.Settings.JDBC_USER;
+
 /**
  * Base class for running a set of functional Elide tests.  This class
  * sets up an Elide instance with an in-memory H2 database.
@@ -28,46 +32,18 @@ import java.util.Properties;
 public class IntegrationTest {
     private ElideStandalone elide;
 
-    protected static final String JDBC_URL = "jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1;MVCC=TRUE";
-    protected static final String JDBC_USER = "sa";
-    protected static final String JDBC_PASSWORD = "";
-
     @BeforeAll
     public void init() throws Exception {
-        elide = new ElideStandalone(new Settings() {
+        Settings settings = new Settings(true) {
             @Override
             public int getPort() {
                 return 8080;
             }
+        };
 
-            @Override
-            public Properties getDatabaseProperties() {
-                Properties options = new Properties();
+        elide = new ElideStandalone(settings);
 
-                options.put("hibernate.show_sql", "true");
-                options.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
-                options.put("hibernate.current_session_context_class", "thread");
-                options.put("hibernate.jdbc.use_scrollable_resultset", "true");
-
-                options.put("javax.persistence.jdbc.driver", "org.h2.Driver");
-                options.put("javax.persistence.jdbc.url", JDBC_URL);
-                options.put("javax.persistence.jdbc.user", JDBC_USER);
-                options.put("javax.persistence.jdbc.password", JDBC_PASSWORD);
-
-                return options;
-            }
-        });
-
-        //Run Liquibase Initialization Script
-        Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(
-                new JdbcConnection(getConnection()));
-
-        Liquibase liquibase = new liquibase.Liquibase(
-                "db/changelog/changelog.xml",
-                new ClassLoaderResourceAccessor(),
-                database);
-
-        liquibase.update("db1");
+        settings.runLiquibaseMigrations();
 
         elide.start(false);
     }

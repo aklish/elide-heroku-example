@@ -18,25 +18,15 @@ import java.util.Properties;
 @Slf4j
 public class Main {
     public static void main(String[] args) throws Exception {
-        ElideStandalone elide = new ElideStandalone(new Settings() {
-            public Properties getDatabaseProperties() {
 
-                Properties dbProps;
-                try {
-                    dbProps = new Properties();
-                    dbProps.load(
-                            Main.class.getClassLoader().getResourceAsStream("dbconfig.properties")
-                    );
+        //If JDBC_DATABASE_URL is not set, we'll run with H2 in memory.
+        boolean inMemory = (System.getenv("JDBC_DATABASE_URL") == null);
 
-                    dbProps.setProperty("javax.persistence.jdbc.url", System.getenv("JDBC_DATABASE_URL"));
-                    dbProps.setProperty("javax.persistence.jdbc.user", System.getenv("JDBC_DATABASE_USERNAME"));
-                    dbProps.setProperty("javax.persistence.jdbc.password", System.getenv("JDBC_DATABASE_PASSWORD"));
-                    return dbProps;
-                } catch (IOException e) {
-                    throw new IllegalStateException(e);
-                }
-            }
-        });
+        Settings settings = new Settings(inMemory) {};
+
+        ElideStandalone elide = new ElideStandalone(settings);
+
+        settings.runLiquibaseMigrations();
 
         elide.start();
     }
