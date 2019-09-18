@@ -44,9 +44,9 @@ import java.util.TimeZone;
  */
 public abstract class Settings implements ElideStandaloneSettings {
 
-    protected String jdbcUrl = "jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1;MVCC=TRUE";
-    protected String jdbcUser = "sa";
-    protected String jdbcPassword = "";
+    protected String jdbcUrl;
+    protected String jdbcUser;
+    protected String jdbcPassword;
 
     protected boolean inMemory;
 
@@ -58,7 +58,7 @@ public abstract class Settings implements ElideStandaloneSettings {
                 .orElse("sa");
 
         jdbcPassword = Optional.ofNullable(System.getenv("JDBC_DATABASE_PASSWORD"))
-                .orElse(null);
+                .orElse("");
 
         this.inMemory = inMemory;
     }
