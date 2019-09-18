@@ -25,6 +25,12 @@
             <groupId>com.yahoo.elide</groupId>
             <artifactId>elide-standalone</artifactId>
             <version>${elide.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>mysql</groupId>
+                    <artifactId>mysql-connector-java</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.yahoo.elide</groupId>
