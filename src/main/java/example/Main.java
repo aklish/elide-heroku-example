@@ -9,9 +9,6 @@ import com.yahoo.elide.standalone.ElideStandalone;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
-import java.util.Properties;
-
 /**
  * Example app using Elide library.
  */

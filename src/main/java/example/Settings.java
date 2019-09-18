@@ -44,13 +44,22 @@ import java.util.TimeZone;
  */
 public abstract class Settings implements ElideStandaloneSettings {
 
-    protected static final String JDBC_URL = "jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1;MVCC=TRUE";
-    protected static final String JDBC_USER = "sa";
-    protected static final String JDBC_PASSWORD = "";
+    protected String jdbcUrl = "jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1;MVCC=TRUE";
+    protected String jdbcUser = "sa";
+    protected String jdbcPassword = "";
 
     protected boolean inMemory;
 
     public Settings(boolean inMemory) {
+        jdbcUrl = Optional.ofNullable(System.getenv("JDBC_DATABASE_URL"))
+                .orElse("jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1;MVCC=TRUE");
+
+        jdbcUser = Optional.ofNullable(System.getenv("JDBC_DATABASE_USERNAME"))
+                .orElse("sa");
+
+        jdbcPassword = Optional.ofNullable(System.getenv("JDBC_DATABASE_PASSWORD"))
+                .orElse(null);
+
         this.inMemory = inMemory;
     }
 
@@ -124,9 +133,9 @@ public abstract class Settings implements ElideStandaloneSettings {
                     Main.class.getClassLoader().getResourceAsStream("dbconfig.properties")
             );
 
-            dbProps.setProperty("javax.persistence.jdbc.url", System.getenv("JDBC_DATABASE_URL"));
-            dbProps.setProperty("javax.persistence.jdbc.user", System.getenv("JDBC_DATABASE_USERNAME"));
-            dbProps.setProperty("javax.persistence.jdbc.password", System.getenv("JDBC_DATABASE_PASSWORD"));
+            dbProps.setProperty("javax.persistence.jdbc.url", jdbcUrl);
+            dbProps.setProperty("javax.persistence.jdbc.user", jdbcUser);
+            dbProps.setProperty("javax.persistence.jdbc.password", jdbcPassword);
             return dbProps;
         } catch (IOException e) {
             throw new IllegalStateException(e);
@@ -156,9 +165,9 @@ public abstract class Settings implements ElideStandaloneSettings {
         options.put("hibernate.jdbc.use_scrollable_resultset", "true");
 
         options.put("javax.persistence.jdbc.driver", "org.h2.Driver");
-        options.put("javax.persistence.jdbc.url", JDBC_URL);
-        options.put("javax.persistence.jdbc.user", JDBC_USER);
-        options.put("javax.persistence.jdbc.password", JDBC_PASSWORD);
+        options.put("javax.persistence.jdbc.url", jdbcUrl);
+        options.put("javax.persistence.jdbc.user", jdbcUser);
+        options.put("javax.persistence.jdbc.password", jdbcPassword);
 
         return options;
     }
@@ -166,7 +175,7 @@ public abstract class Settings implements ElideStandaloneSettings {
     public void runLiquibaseMigrations() throws Exception {
         //Run Liquibase Initialization Script
         Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(
-                new JdbcConnection(DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD)));
+                new JdbcConnection(DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcPassword)));
 
         Liquibase liquibase = new liquibase.Liquibase(
                 "db/changelog/changelog.xml",

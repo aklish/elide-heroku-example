@@ -1,16 +1,6 @@
-/*
- * Copyright 2019, Yahoo Inc.
- * Licensed under the Apache License, Version 2.0
- * See LICENSE file in project root for terms.
- */
 package example;
 
 import com.yahoo.elide.standalone.ElideStandalone;
-import liquibase.Liquibase;
-import liquibase.database.Database;
-import liquibase.database.DatabaseFactory;
-import liquibase.database.jvm.JdbcConnection;
-import liquibase.resource.ClassLoaderResourceAccessor;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
@@ -18,11 +8,6 @@ import org.junit.jupiter.api.TestInstance;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
-
-import static example.Settings.JDBC_PASSWORD;
-import static example.Settings.JDBC_URL;
-import static example.Settings.JDBC_USER;
 
 /**
  * Base class for running a set of functional Elide tests.  This class
@@ -46,10 +31,6 @@ public class IntegrationTest {
         settings.runLiquibaseMigrations();
 
         elide.start(false);
-    }
-
-    protected Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD);
     }
 
     @AfterAll
