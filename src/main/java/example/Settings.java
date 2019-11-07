@@ -6,9 +6,11 @@
 
 package example;
 
+import com.google.common.collect.Lists;
 import com.yahoo.elide.contrib.swagger.SwaggerBuilder;
 import com.yahoo.elide.core.EntityDictionary;
 import com.yahoo.elide.standalone.config.ElideStandaloneSettings;
+import example.filters.CorsFilter;
 import example.models.ArtifactGroup;
 import example.models.ArtifactProduct;
 import example.models.ArtifactVersion;
@@ -25,6 +27,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import java.io.IOException;
 import java.sql.DriverManager;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
@@ -107,6 +110,11 @@ public abstract class Settings implements ElideStandaloneSettings {
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    @Override
+    public List<Class<?>> getFilters() {
+        return Lists.newArrayList(CorsFilter.class);
     }
 
     @Override
