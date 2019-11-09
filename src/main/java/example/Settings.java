@@ -45,7 +45,7 @@ public abstract class Settings implements ElideStandaloneSettings {
 
     public Settings(boolean inMemory) {
         jdbcUrl = Optional.ofNullable(System.getenv("JDBC_DATABASE_URL"))
-                .orElse("jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1;MVCC=TRUE");
+                .orElse("jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1");
 
         jdbcUser = Optional.ofNullable(System.getenv("JDBC_DATABASE_USERNAME"))
                 .orElse("sa");
