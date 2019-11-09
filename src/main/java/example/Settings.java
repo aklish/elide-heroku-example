@@ -124,7 +124,6 @@ public abstract class Settings implements ElideStandaloneSettings {
        try {
            resource_handler.setDirectoriesListed(false);
            resource_handler.setResourceBase(Settings.class.getClassLoader()
-                   //.getResource("META-INF/resources/webjars/swagger-ui/3.23.8").toURI().toString());
                    .getResource("META-INF/resources/").toURI().toString());
            servletContextHandler.insertHandler(resource_handler);
        } catch (Exception e) {

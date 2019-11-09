@@ -7,8 +7,15 @@
     <title>JS Bin</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/denali-design/denali-css/css/denali.css"/>
     <script>
-    function switchFrame(url){
+    function switchFrame(url, element) {
+        let activeElements = document.getElementsByClassName('is-active');
+
+        for (let item of activeElements) { 
+          item.classList.remove('is-active');
+        }
+
         document.getElementById('iframe').src = url;
+        element.classList.add('is-active');
     }
     </script>
 </head>
@@ -19,11 +26,11 @@
         </div>
         <div class="nav-right">
             <div class="nav-group">
-                <a class="nav-item" onclick="switchFrame('swagger/index.html')">Explore JSON-API</a>
-                <a class="nav-item" onclick="switchFrame('/graphiql/index.html')">Explore GraphQL</a>
+                <a class="nav-item is-active" onclick="switchFrame('swagger/index.html', this)">Explore JSON-API</a>
+                <a class="nav-item" onclick="switchFrame('/graphiql/index.html', this)">Explore GraphQL</a>
             </div>
         </div>
     </nav>
-    <iframe id="iframe" src="/swagger/index.html" style="position:block; left:0; bottom:0; right:0; width:100%; height:100vh; border:none; margin:0; padding:0;"/>
+    <iframe id="iframe" src="/swagger/index.html" style="left:0; bottom:0; right:0; width:100%; height:100vh; border:none; margin:0; padding:0;"/>
 </body>
 </html>
